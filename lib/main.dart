@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -33,11 +34,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ServerInfo> servers = [];
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _loadServers();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(minutes: 2), (timer) {
+      _fetchServerTimes();
+    });
   }
 
   Future<void> _loadServers() async {
